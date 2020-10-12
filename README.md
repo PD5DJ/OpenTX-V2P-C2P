@@ -1,9 +1,7 @@
 # OpenTX-V2P-C2P
 OpenTX Custom lua scripts.
 
-Cell to Battery % Converter script.
-
-Converts Frsky vfas sensor voltage to battery percentage to be used in OTX enviroment.
+Converts Frsky VFAS & MLVSS/FLVSS sensor voltage to battery percentage to be used in OTX enviroment.
 
 Scripts can be used on any OpenTX based radio.
 
