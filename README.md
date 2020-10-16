@@ -27,11 +27,7 @@ This percentage can be used with anything inside the OpenTX enviroment.
 
 For example to be used with my one of my other widgets like "Gaugie"
 
-**CEL%.lua**
 
-This script does the same as the script above but reads the voltage of MLVSS or FLVSS sensor input.
-
------------------------------------------------------------
 
 **Configuring VLT% Script**
 
@@ -44,6 +40,12 @@ Only 2 things are important here:
 2. **Cells** – Set amount of cells used (for correct % calculation)
 
 -----------------------------------------------------------
+
+**CEL%.lua**
+
+This script does the same as the script above but reads the voltage of MLVSS or FLVSS sensor input.
+
+
 
 **Configuring CEL% Script**
 
