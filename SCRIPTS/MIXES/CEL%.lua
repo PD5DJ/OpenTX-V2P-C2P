@@ -30,7 +30,7 @@
 
 local inputs     = { {"Instance", VALUE ,0,7,0}, {"Sensor", SOURCE}}
 local wait_end   = 0
-local cell_count = 1
+local Cell_Count = 1
 local state
 local Voltage_Filtered  = 0   
 local Battery_Connected = 0 
@@ -92,7 +92,7 @@ local function run(Instance, Voltsource)
 
    -- the following table of percentages has 121 percentage values ,
    -- starting from 3.0 V to 4.2 V , in steps of 0.01 V 
-  Voltage = getCellSum(Voltsource)
+  Voltage    = getCellSum(Voltsource)
   Cell_Count = getCellCount(Voltsource)
   
   local Percent_Table = 
@@ -107,24 +107,24 @@ local function run(Instance, Voltsource)
    
   if state == nil then state = no_battery end
 
-  if cell_count > 0 then 
+  if Cell_Count > 0 then 
 
     local Voltage_Cell    = 3
     local Battery_Percent = 0
     local Table_Index     = 1
 
-    Voltage_Cell      = Voltage_Filtered / cell_count 
+    Voltage_Cell      = Voltage_Filtered / Cell_Count 
     Table_Index       = math.floor( 100 * Voltage_Cell - 298 )
     Battery_Connected = 1     
 
     if Table_Index    > 120 then  Table_Index = 120 end  --## check for index bounds
     if Table_Index    <   1 then  Table_Index =   1 end
 
-    Battery_Percent            =   Percent_Table[Table_Index]
+    Battery_Percent   = Percent_Table[Table_Index]
 
     --https://opentx.gitbooks.io/opentx-2-2-lua-reference-guide/content/general/setTelemetryValue.html
     
-    setTelemetryValue(0x0320, 0, 0 + Instance, Battery_Percent * Battery_Connected, 13, 0, "CEL"..Instance)
+    setTelemetryValue(0x0340, 0, 0 + Instance, Battery_Percent, 13, 0, "CEL"..Instance)
     
     return 0
 
