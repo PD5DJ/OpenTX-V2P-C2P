@@ -1,19 +1,19 @@
 # OpenTX-V2P-C2P
 OpenTX Custom lua scripts.
 
-Converts Frsky VFAS & MLVSS/FLVSS sensor voltage to battery percentage to be used in OTX enviroment.
+Converts Frsky VFAS & MLVSS/FLVSS sensor voltage to battery percentage sensor to be used in OTX enviroment.
 
 Scripts can be used on any OpenTX based radio.
 
-![alt text](https://github.com/Hobby4life/OpenTX-V2P-C2P/blob/main/VLTCEL.jpg)
+![alt text](https://github.com/Hobby4life/OpenTX-V2P-C2P/blob/main/VLTCEL.png)
 
 -----------------------------------------------------------
 
 This repository contains 2 scripts.
 
-**1. v2p.lua**
+**1. VLT%.lua**
 
-**2. c2p.lua**
+**2. CEL%.lua**
 
 ----------------------------------------------------------
 
@@ -21,9 +21,11 @@ This repository contains 2 scripts.
 
 This script reads the voltage of any standard VFAS,A1..A2 etc like sensor inputs.
 
+It creates a new sensor **VLT0..VLT7**
+
 The voltage is then converted to a battery percentage.
 
-This percentage can be used with anything inside the OpenTX enviroment.
+This new sensor can be used with anything inside the OpenTX enviroment.
 
 For example to be used with my one of my other widgets like "Gaugie"
 
@@ -33,11 +35,13 @@ For example to be used with my one of my other widgets like "Gaugie"
 
 ![alt text](https://github.com/Hobby4life/OpenTX-V2P-C2P/blob/main/VLT_Config.png)
 
-Only 2 things are important here:
+3 things are important here:
 
-1. **Sensor** – Select voltage input sensor.
+1. **Instance** - Select an instance for this script.. setting 0 will create a sensor **VLT0**, 5 will create sensor **VLT5**.
 
-2. **Cells** – Set amount of cells used (for correct % calculation)
+2. **Sensor** – Select voltage input sensor.
+
+3  **Cells** – Set amount of cells used (for correct % calculation)
 
 -----------------------------------------------------------
 
@@ -51,6 +55,8 @@ This script does the same as the script above but reads the voltage of MLVSS or 
 
 ![alt text](https://github.com/Hobby4life/OpenTX-V2P-C2P/blob/main/CEL_Config.png)
 
-Select Cels sensor input.
+1. **Instance** - Select an instance for this script.. setting 0 will create a sensor **CEL0**, 5 will create sensor **CEL5**.
+
+2. **Sensor** – Select Cell input sensor.
 
 **(Power cycle of the TX is needed!)**
