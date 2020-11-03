@@ -30,13 +30,12 @@
 ---- ##########################################################################################################
 
 
-local inputs     = { {"Sensor", SOURCE}, {"Cells", VALUE ,1,12,1 }}
-local outputs    = { "VLT%" }
+local inputs     = { {"Instance", VALUE ,0,7,0}, {"Sensor", SOURCE}, {"Cells", VALUE ,1,12,1 } }
 local wait_end   = 0
-local cell_count = 1
+local Cell_Count = 1
 local state
-local filtered_voltage = 0   
-local batt_on          = 0 
+local Voltage_Filtered = 0   
+local Battery_Connected          = 0 
 
 --state functions forward declaration
 local wait, no_battery, done
@@ -45,10 +44,10 @@ local wait, no_battery, done
 
 function no_battery()
    -- wait for battery
-   batt_on    = 0
+   Battery_Connected    = 0
 
-   if filtered_voltage > 3 then
-       batt_on    = 1
+   if Voltage_Filtered > 3 then
+       Battery_Connected    = 1
        --state      = wait_to_stabilize
        wait_end   = getTime() + 200
    end  --  end if
@@ -59,9 +58,9 @@ end  -- no_battery()
 
 function done()
 
-   if filtered_voltage < 1 then
+   if Voltage_Filtered < 1 then
        state      = no_battery
-       batt_on    = 0
+       Battery_Connected    = 0
     end  -- end if
 
 end  -- end done()
@@ -71,12 +70,12 @@ end  -- end done()
 
 ---------------------------------------------------------
 
-local function run(voltsource, cells)
+local function run(Instance,Voltage_Source, Cell_Count)
 
    -- the following table of percentages has 121 percentage values ,
    -- starting from 3.0 V to 4.2 V , in steps of 0.01 V 
-    voltage = voltsource
-    cell_count = cells  
+    --Voltage = Voltage_Source
+    --Cell_Count = Cells  
   
   local Percent_Table = 
 	{0  , 1  , 1  ,  1 ,  1 ,  1 ,  1 ,  1 ,  1 ,  1 ,  1 ,  1 ,  1 ,  1 ,  1 ,  1 ,  1 ,  1 ,  1 ,  1 , 
@@ -86,42 +85,41 @@ local function run(voltsource, cells)
 	 33 , 36 , 39 , 42 , 45 , 48 , 51 , 54 , 57 , 58 , 60 , 62 , 64 , 66 , 67 , 69 , 70 , 72 , 74 , 75 , 
 	 77 , 78 , 80 , 81 , 82 , 84 , 85 , 86 , 86 , 87 , 88 , 89 , 91 , 92 , 94 , 95 , 96 , 97 , 97 , 99 , 100  }
 
-   filtered_voltage = filtered_voltage * 0.9  +  voltage * 0.1
+   Voltage_Filtered = Voltage_Filtered * 0.9  +  Voltage_Source * 0.1
    
-   if state == nil then state = no_battery   end    --state initialization
-
-   --state(play)     -- call state function
+   if state == nil then state = no_battery end 
    
+   if Cell_Count > 0 then 
 
-   if cell_count > 0 then 
+    local Voltage_Cell    = 3
+    local Battery_Percent = 0
+    local Table_Index     = 1
 
-    local V_Cell      = 3
-    local VB          = 0
-    local table_index = 1
+    Voltage_Cell      = Voltage_Filtered / Cell_Count 
+    Table_Index       = math.floor( 100 * Voltage_Cell - 298 )
+    Battery_Connected = 1     
 
-    V_Cell            = filtered_voltage / cell_count 
-    table_index       = math.floor( 100 * V_Cell - 298 )
-    batt_on           = 1     
+    if Table_Index    > 120 then  Table_Index = 120 end  --## check for index bounds
+    if Table_Index    <   1 then  Table_Index =   1 end
 
-    -- table_index       = 100   -- test case , index = 100 should report 75% charge
+    Battery_Percent   = Percent_Table[Table_Index]
 
-    if table_index    > 120 then  table_index = 120 end  --## check for index bounds
-    if table_index    <   1 then  table_index =   1 end
+    --https://opentx.gitbooks.io/opentx-2-2-lua-reference-guide/content/general/setTelemetryValue.html
+    
+    setTelemetryValue(0x0310, 0, 0 + Instance, Battery_Percent * Battery_Connected, 13, 0, "VLT"..Instance)
+    
+    return
 
-    VB            =   Percent_Table[table_index]
+  end
 
-    return( VB * 10.24 * batt_on )
+  return 0
 
-  end  -- end if 
-
-  return 0  ---  no error
-
-end -- end run
+end
 
 -------------------------------------------------------
 
 ---  OpenTX LUA interface parameters declared here
 
-return { run=run, input=inputs, output=outputs }
+return { run=run, input=inputs }
 
 -------------------------------------------------------
